@@ -25,7 +25,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import {yaho} from '@product1/core';
+import {createStore, setup} from '@product1/core';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -59,6 +59,9 @@ function Section({children, title}: SectionProps): React.JSX.Element {
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const store = createStore();
+
+  setup(store, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -78,7 +81,9 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">{yaho()}</Section>
+          <Section title="Step One">
+            {store.userspace.ui.activeNote?.value}
+          </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>

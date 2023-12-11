@@ -1,8 +1,8 @@
-console.log("hello world");
+import { createStore, setup } from "./models/setup";
 
 const yaho = () => {
   console.log("yayalsdkjf ");
   return "some  aslsfalsdfjk";
 };
 
-export { yaho };
+export { yaho, createStore, setup };

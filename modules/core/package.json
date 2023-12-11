@@ -4,6 +4,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc -d"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
@@ -13,5 +17,9 @@
     "prettier": "^3.1.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "mobx": "^6.12.0",
+    "mobx-state-tree": "^5.4.0"
   }
 }
