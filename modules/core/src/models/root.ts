@@ -16,10 +16,22 @@ export const State = types
     },
   }));
 
-export const Ui = types.model("Ui", {
-  stateRef: types.reference(State),
-  activeNote: types.maybeNull(types.reference(Note)),
-});
+export const Ui = types
+  .model("Ui", {
+    stateRef: types.reference(State),
+    activeNote: types.maybeNull(types.reference(Note)),
+  })
+  .actions((self) => ({
+    setActiveNote: (value: string) => {
+      const match = self.stateRef.notes.find((note) => note.id === value);
+      if (match) {
+        self.activeNote = match;
+      }
+    },
+    addNote: (value: string) => {
+      self.stateRef.addNote(value);
+    },
+  }));
 
 // TODO: Rethink if we include Userspace and Ui in this module.
 //       For now, lets include, and split siguro later if needed

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@product1/core": "../modules/core",
+    "mobx-react-lite": "^4.0.5",
     "react": "18.2.0",
     "react-native": "0.73.0"
   },

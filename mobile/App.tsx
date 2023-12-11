@@ -8,6 +8,7 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,6 +27,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import {createStore, setup} from '@product1/core';
+// TODO: we may be able to move this to our modules, keep for now
+import {observer} from 'mobx-react-lite';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -57,10 +60,26 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
-function App(): React.JSX.Element {
+const StateComponent = observer(({store}) => {
+  return (
+    <View>
+      <Text>{store.userspace.ui.activeNote?.value}-</Text>
+      <Text>{store.userspace.ui.stateRef.notes.length}</Text>
+      <Button
+        title="test"
+        onPress={() => {
+          // store.userspace.ui.activeNote?.setValue('test');
+          console.log('hello', store.userspace.ui.stateRef.notes);
+          store.userspace.ui.addNote(Date.now().toString());
+        }}
+      />
+    </View>
+  );
+});
+
+const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
   const store = createStore();
-
   setup(store, []);
 
   const backgroundStyle = {
@@ -81,8 +100,8 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            {store.userspace.ui.activeNote?.value}
+          <Section title="LSl">
+            <StateComponent store={store} />
           </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
@@ -98,7 +117,7 @@ function App(): React.JSX.Element {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   sectionContainer: {
