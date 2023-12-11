@@ -29,6 +29,7 @@ import {
 import {createStore, setup} from '@product1/core';
 // TODO: we may be able to move this to our modules, keep for now
 import {observer} from 'mobx-react-lite';
+import {loadFromStorage, saveOnChange} from './app/libs/localstorage';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -68,8 +69,6 @@ const StateComponent = observer(({store}) => {
       <Button
         title="test"
         onPress={() => {
-          // store.userspace.ui.activeNote?.setValue('test');
-          console.log('hello', store.userspace.ui.stateRef.notes);
           store.userspace.ui.addNote(Date.now().toString());
         }}
       />
@@ -80,7 +79,7 @@ const StateComponent = observer(({store}) => {
 const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
   const store = createStore();
-  setup(store, []);
+  setup(store, [saveOnChange, loadFromStorage]);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

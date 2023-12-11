@@ -2,31 +2,34 @@ import {
   SnapshotIn,
   castToReferenceSnapshot,
   castToSnapshot,
+  onSnapshot,
+  applySnapshot,
 } from "mobx-state-tree";
 import { RootStore, State, TRootStore } from "./root";
 // import { applySnapshot, onSnapshot } from "mobx-state-tree";
 
-type StoreMiddleware = (store: TRootStore) => TRootStore | Promise<TRootStore>;
+export type StoreMiddleware = (
+  store: TRootStore,
+) => TRootStore | Promise<TRootStore>;
+export const createMiddleware = (
+  fn: (helpers: {
+    // TODO: narrow scope of these helpers, do not bleed mobx-state-tree stuff
+    onSnapshot: typeof onSnapshot;
+    applySnapshot: typeof applySnapshot;
+  }) => StoreMiddleware,
+) => {
+  return fn({ onSnapshot, applySnapshot });
+};
 
 export const createStore = (value?: SnapshotIn<TRootStore>): TRootStore => {
   const state = State.create({
     id: "default",
-    notes: [
-      {
-        id: "alsdkjf",
-        value: "alsdkjf",
-      },
-      {
-        id: "123",
-        value: "123",
-      },
-    ],
   });
   return RootStore.create(
     value || {
       userspace: {
         state: castToSnapshot(state),
-        ui: { stateRef: castToReferenceSnapshot(state), activeNote: "123" },
+        ui: { stateRef: castToReferenceSnapshot(state) },
       },
     },
   );
@@ -40,25 +43,3 @@ export const setup = async (
     return p.then((x) => c(x));
   }, Promise.resolve(store));
 };
-
-/*
-// version up when the model have breaking changes
-const ROOTSTORE_KEY = "rootStore-kinkou-v0";
-export const loadFromStorage: StoreMiddleware = async (store) => {
-  await localforage.getItem(ROOTSTORE_KEY).then((snap) => {
-    if (snap) {
-      applySnapshot(store, snap);
-    }
-  });
-
-  return store;
-};
-
-export const saveOnChange: StoreMiddleware = (store) => {
-  onSnapshot(store, (snap) => {
-    localforage.setItem(ROOTSTORE_KEY, snap);
-  });
-
-  return store;
-};
-*/
