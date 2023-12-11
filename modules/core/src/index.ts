@@ -1,10 +1,8 @@
-
-console.log('hello world')
+console.log("hello world");
 
 const yaho = () => {
+  console.log("yayalsdkjf ");
+  return "some  aslsfalsdfjk";
+};
 
-  console.log('yayalsdkjf ')
-  return "some  aslsfalsdfjk"
-}
-
-export  {yaho}
+export { yaho };
