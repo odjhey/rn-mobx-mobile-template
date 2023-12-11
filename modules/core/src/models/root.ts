@@ -14,6 +14,9 @@ export const State = types
     addNote: (value: string) => {
       self.notes.push({ id: value, value });
     },
+    clear: () => {
+      self.notes.clear();
+    },
   }));
 
 export const Ui = types
@@ -21,6 +24,11 @@ export const Ui = types
     stateRef: types.reference(State),
     activeNote: types.maybeNull(types.reference(Note)),
   })
+  .views((self) => ({
+    notes: () => {
+      return self.stateRef.notes;
+    },
+  }))
   .actions((self) => ({
     setActiveNote: (value: string) => {
       const match = self.stateRef.notes.find((note) => note.id === value);
@@ -30,6 +38,9 @@ export const Ui = types
     },
     addNote: (value: string) => {
       self.stateRef.addNote(value);
+    },
+    clear: () => {
+      self.stateRef.clear();
     },
   }));
 
