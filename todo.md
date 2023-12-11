@@ -9,6 +9,7 @@
 - [ ] custom model middlewares
 - [ ] storage middleware
 - [ ] separate ui to ui.ts
+- [ ] find a way to only expose the "ui" actions
 
 ### mobile
 - [ ] file uploads
