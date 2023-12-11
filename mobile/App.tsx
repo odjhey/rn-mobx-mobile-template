@@ -72,6 +72,12 @@ const StateComponent = observer(({store}) => {
           store.userspace.ui.addNote(Date.now().toString());
         }}
       />
+      <Button
+        title="clear"
+        onPress={() => {
+          store.userspace.ui.clear();
+        }}
+      />
     </View>
   );
 });
