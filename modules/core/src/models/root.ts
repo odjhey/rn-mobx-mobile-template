@@ -1,4 +1,4 @@
-import { Instance, types } from "mobx-state-tree";
+import { Instance, destroy, types } from "mobx-state-tree";
 
 const Note = types.model("Note", {
   id: types.identifier,
@@ -16,6 +16,12 @@ export const State = types
     },
     clear: () => {
       self.notes.clear();
+    },
+    removeNoteById: (id: string) => {
+      const match = self.notes.find((note) => note.id === id);
+      if (match) {
+        destroy(match);
+      }
     },
   }));
 
@@ -38,6 +44,9 @@ export const Ui = types
     },
     addNote: (value: string) => {
       self.stateRef.addNote(value);
+    },
+    removeNote: (id: string) => {
+      self.stateRef.removeNoteById(id);
     },
     clear: () => {
       self.stateRef.clear();

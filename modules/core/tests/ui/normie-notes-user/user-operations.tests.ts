@@ -45,3 +45,18 @@ t.test("user should be able to view notes", async (t) => {
     { id: "world", value: "world" },
   ]);
 });
+
+t.test("user should be able to remove a note", async (t) => {
+  t.plan(2);
+
+  const store = await getStore();
+  store.userspace.ui.addNote("hello");
+  store.userspace.ui.addNote("world");
+  const notesB4 = store.userspace.ui.notes();
+  t.equal(notesB4.length, 2);
+
+  store.userspace.ui.removeNote("hello");
+
+  const notesAfter = store.userspace.ui.notes();
+  t.same(notesAfter, [{ id: "world", value: "world" }]);
+});
