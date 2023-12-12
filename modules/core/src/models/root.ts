@@ -1,9 +1,15 @@
 import { Instance, destroy, types } from "mobx-state-tree";
 
-const Note = types.model("Note", {
-  id: types.identifier,
-  value: types.string,
-});
+const Note = types
+  .model("Note", {
+    id: types.identifier,
+    value: types.string,
+  })
+  .actions((self) => ({
+    updateValue: (value: string) => {
+      self.value = value;
+    },
+  }));
 
 export const State = types
   .model("State", {
@@ -21,6 +27,12 @@ export const State = types
       const match = self.notes.find((note) => note.id === id);
       if (match) {
         destroy(match);
+      }
+    },
+    updateNoteById: ({ id }: { id: string }, { value }: { value: string }) => {
+      const match = self.notes.find((note) => note.id === id);
+      if (match) {
+        match.updateValue(value);
       }
     },
   }));
@@ -47,6 +59,9 @@ export const Ui = types
     },
     removeNote: (id: string) => {
       self.stateRef.removeNoteById(id);
+    },
+    updateNote: ({ id }: { id: string }, { value }: { value: string }) => {
+      self.stateRef.updateNoteById({ id }, { value });
     },
     clear: () => {
       self.stateRef.clear();
