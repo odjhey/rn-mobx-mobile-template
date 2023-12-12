@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   Button,
@@ -19,18 +19,12 @@ import {
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import {createStore, setup} from '@product1/core';
+import {init} from '@product1/core';
 // TODO: we may be able to move this to our modules, keep for now
 import {observer} from 'mobx-react-lite';
-import {loadFromStorage, saveOnChange} from './app/libs/localstorage';
+import {storage} from './app/libs/localstorage';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -93,36 +87,49 @@ const NoteEditor = ({id, value, updateFn}) => {
 const StateComponent = observer(({store}) => {
   return (
     <View>
-      <Text>{store.userspace.ui.activeNote?.value}-</Text>
-      <Text>{store.userspace.ui.stateRef.notes.length}</Text>
+      <Text>{store.ui.notes().length}</Text>
       <Button
         title="test"
         onPress={() => {
-          store.userspace.ui.addNote(Date.now().toString());
+          store.ui.createNote(Date.now().toString());
         }}
       />
       <Button
         title="clear"
         onPress={() => {
-          store.userspace.ui.clear();
+          store.ui.clearNotes();
         }}
       />
       <NoteEditor
-        id={store.userspace.ui.activeNote?.id}
-        value={store.userspace.ui.activeNote?.value}
+        id={''}
+        value={''}
         updateFn={(id, value) => {
-          store.userspace.ui.updateNote({id}, {value});
+          store.ui.editNote({id}, {value});
         }}
       />
-      <Text>{JSON.stringify(store.userspace.ui.notes(), null, 2)}</Text>
+      <Text>{JSON.stringify(store.ui.notes(), null, 2)}</Text>
     </View>
   );
 });
 
 const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
-  const store = createStore();
-  setup(store, [saveOnChange, loadFromStorage]);
+  const tmpStore = init({
+    storage,
+  });
+
+  const [store, setStore] = useState<Awaited<typeof tmpStore>>();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    tmpStore
+      .then(s => {
+        setStore(s);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -137,13 +144,12 @@ const App = (): React.JSX.Element => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="LSl">
-            <StateComponent store={store} />
+            {!loading && <StateComponent store={store} />}
           </Section>
         </View>
       </ScrollView>
