@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   Button,
@@ -14,6 +14,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
@@ -61,6 +62,34 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
+const NoteEditor = ({id, value, updateFn}) => {
+  const [selectedNoteId, setSelectedNoteId] = useState(id);
+  const [newValue, setNewValue] = useState(value);
+
+  const handleUpdate = () => {
+    updateFn(selectedNoteId, newValue);
+    setNewValue(''); // Clear input after update
+  };
+
+  return (
+    <View>
+      <Text>Select Note ID:</Text>
+      <TextInput
+        value={selectedNoteId}
+        onChangeText={setSelectedNoteId}
+        placeholder="Enter note ID"
+      />
+      <Text>Edit Note Value:</Text>
+      <TextInput
+        value={newValue}
+        onChangeText={setNewValue}
+        placeholder="Enter new value"
+      />
+      <Button title="Update Note" onPress={handleUpdate} />
+    </View>
+  );
+};
+
 const StateComponent = observer(({store}) => {
   return (
     <View>
@@ -78,6 +107,14 @@ const StateComponent = observer(({store}) => {
           store.userspace.ui.clear();
         }}
       />
+      <NoteEditor
+        id={store.userspace.ui.activeNote?.id}
+        value={store.userspace.ui.activeNote?.value}
+        updateFn={(id, value) => {
+          store.userspace.ui.updateNote({id}, {value});
+        }}
+      />
+      <Text>{JSON.stringify(store.userspace.ui.notes(), null, 2)}</Text>
     </View>
   );
 });
@@ -108,16 +145,6 @@ const App = (): React.JSX.Element => {
           <Section title="LSl">
             <StateComponent store={store} />
           </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
         </View>
       </ScrollView>
     </SafeAreaView>
