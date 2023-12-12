@@ -1,0 +1,18 @@
+@startuml tobe
+package "mobile" {
+  [Views] - "react-hooks"
+}
+
+node "core" {
+  port "core.ui"
+  [mobx-state-tree]
+  [http-stuff]
+}
+
+"react-hooks" -down- "core.ui"
+
+note top of "core.ui"
+  mst views and actions
+end note
+
+@enduml
