@@ -21,7 +21,7 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import {init} from '@product1/core';
+import {Store, init} from '@product1/core';
 // TODO: we may be able to move this to our modules, keep for now
 import {observer} from 'mobx-react-lite';
 import {storage} from './app/libs/localstorage';
@@ -56,7 +56,15 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
-const NoteEditor = ({id, value, updateFn}) => {
+const NoteEditor = ({
+  id,
+  value,
+  updateFn,
+}: {
+  id: string;
+  value: string;
+  updateFn: (id: string, value: string) => unknown;
+}) => {
   const [selectedNoteId, setSelectedNoteId] = useState(id);
   const [newValue, setNewValue] = useState(value);
 
@@ -84,7 +92,7 @@ const NoteEditor = ({id, value, updateFn}) => {
   );
 };
 
-const StateComponent = observer(({store}) => {
+const StateComponent = observer(({store}: {store: Store}) => {
   return (
     <View>
       <Text>{store.ui.notes().length}</Text>
@@ -129,6 +137,7 @@ const App = (): React.JSX.Element => {
       .finally(() => {
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const backgroundStyle = {
@@ -149,7 +158,7 @@ const App = (): React.JSX.Element => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="LSl">
-            {!loading && <StateComponent store={store} />}
+            {!loading && store && <StateComponent store={store} />}
           </Section>
         </View>
       </ScrollView>

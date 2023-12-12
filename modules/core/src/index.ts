@@ -2,3 +2,4 @@
 import { init } from "./surface";
 
 export { init };
+export type { Store } from "./surface";

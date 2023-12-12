@@ -37,25 +37,28 @@ const init = async ({
 
   const store = await setup(createStore(), [...storageMiddlewares]);
 
-  return {
-    ui: {
-      createNote: (value: string) => {
-        return store.userspace.ui.addNote(value);
-      },
-      notes: () => {
-        return store.userspace.ui.notes();
-      },
-      editNote: ({ id }: { id: string }, { value }: { value: string }) => {
-        return store.userspace.ui.updateNote({ id }, { value });
-      },
-      clearNotes: () => {
-        return store.userspace.ui.clear();
-      },
-      deleteNote: ({ id }: { id: string }) => {
-        return store.userspace.ui.removeNote(id);
-      },
+  const ui: NoteActions & NoteViews = {
+    createNote: (value: string) => {
+      return store.userspace.ui.addNote(value);
     },
+    notes: () => {
+      return store.userspace.ui.notes();
+    },
+    editNote: ({ id }: { id: string }, { value }: { value: string }) => {
+      return store.userspace.ui.updateNote({ id }, { value });
+    },
+    clearNotes: () => {
+      return store.userspace.ui.clear();
+    },
+    deleteNote: ({ id }: { id: string }) => {
+      return store.userspace.ui.removeNote(id);
+    },
+  };
+
+  return {
+    ui,
   };
 };
 
+export type Store = Awaited<ReturnType<typeof init>>;
 export { init };
