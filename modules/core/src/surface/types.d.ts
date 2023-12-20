@@ -2,6 +2,11 @@ type Note = {
   id: string;
   value: string;
 };
+type Pokemon = {
+  id: string;
+  name: string;
+  type: string[];
+};
 
 // TODO: fix returns
 type NoteActions = {
@@ -13,4 +18,11 @@ type NoteActions = {
 
 type NoteViews = {
   notes: () => Note[];
+};
+
+type PokemonViews = {
+  pokemons: () => Pokemon[];
+};
+type PokemonActions = {
+  fetchPokemons: () => Promise<void>;
 };

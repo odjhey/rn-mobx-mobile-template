@@ -84,3 +84,18 @@ t.test("user should be able to edit a note", async (t) => {
     { id: "3", value: "3" },
   ]);
 });
+
+t.test("users should be able to retrieve pokemons", async (t) => {
+  t.plan(2);
+
+  const store = await getStore();
+  await store.ui.fetchPokemons();
+  const pokemons = store.ui.pokemons();
+  t.same(pokemons, [
+    {
+      id: "gsfmecwfmaml6p6",
+      name: "psyduck",
+      type: ["grass"],
+    },
+  ]);
+});
