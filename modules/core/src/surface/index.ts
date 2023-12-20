@@ -18,7 +18,12 @@ const init = async ({
         createMiddleware(({ applySnapshot }) => async (store) => {
           await storage.getItem().then((snap) => {
             // TODO: handle error
-            if (snap) {
+            if (
+              snap &&
+              // IDK y this constructor check was added
+              Object.keys(snap).length > 0 &&
+              snap.constructor === Object
+            ) {
               applySnapshot(store, snap);
             }
           });
