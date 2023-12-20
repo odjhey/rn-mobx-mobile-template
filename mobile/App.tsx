@@ -92,6 +92,19 @@ const NoteEditor = ({
   );
 };
 
+const PokemonComponent = observer(({store}: {store: Store}) => {
+  return (
+    <View>
+      <Text>{store.ui.pokemons().length}</Text>
+      <Button
+        title="get pokemons"
+        onPress={() => {
+          store.ui.fetchPokemons();
+        }}
+      />
+    </View>
+  );
+});
 const StateComponent = observer(({store}: {store: Store}) => {
   return (
     <View>
@@ -157,6 +170,9 @@ const App = (): React.JSX.Element => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
+          <Section title="Pokemon">
+            {!loading && store && <PokemonComponent store={store} />}
+          </Section>
           <Section title="LSl">
             {!loading && store && <StateComponent store={store} />}
           </Section>

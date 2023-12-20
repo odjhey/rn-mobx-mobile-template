@@ -42,7 +42,7 @@ const init = async ({
 
   const store = await setup(createStore(), [...storageMiddlewares]);
 
-  const ui: NoteActions & NoteViews = {
+  const ui: NoteActions & NoteViews & PokemonViews & PokemonActions = {
     createNote: (value: string) => {
       return store.userspace.ui.addNote(value);
     },
@@ -57,6 +57,13 @@ const init = async ({
     },
     deleteNote: ({ id }: { id: string }) => {
       return store.userspace.ui.removeNote(id);
+    },
+
+    pokemons: () => {
+      return store.userspace.ui.pokemons();
+    },
+    fetchPokemons: () => {
+      return store.userspace.ui.fetchPokemons();
     },
   };
 
